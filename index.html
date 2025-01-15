@@ -3,112 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz App with Leaderboard</title>
+    <title>Quiz Game</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background: #f4f4f9;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            font-family: Arial, sans-serif;
+            margin: 20px;
         }
-        .quiz-container {
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            width: 90%;
-            max-width: 600px;
-            text-align: center;
+        .quiz-container, .leaderboard {
+            margin: 20px 0;
         }
-        .question {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        .options {
+        ul {
             list-style: none;
             padding: 0;
-            margin: 0;
         }
-        .options li {
-            margin: 10px 0;
-            padding: 10px 15px;
-            background: #f0f0f5;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .options li:hover {
-            background: #e0e0f0;
-        }
-        .options li.correct {
-            background: #c8e6c9;
-        }
-        .options li.wrong {
-            background: #ffcdd2;
-        }
-        .timer {
-            font-size: 18px;
-            color: #d32f2f;
-            margin-bottom: 20px;
-        }
-        #next-btn {
-            display: none;
-            padding: 10px 20px;
-            background: #1976d2;
-            color: #ffffff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        #next-btn:hover {
-            background: #1565c0;
-        }
-        .result {
-            font-size: 24px;
-            color: #333;
-            display: none;
-        }
-        .leaderboard {
-            margin-top: 20px;
+        li {
+            margin: 5px 0;
             padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
             border-radius: 5px;
-            background: #f9f9f9;
+            cursor: pointer;
         }
-        .leaderboard h2 {
-            font-size: 20px;
-            margin: 0;
+        li.correct {
+            background-color: #c8e6c9;
         }
-        .leaderboard ul {
-            list-style: none;
-            padding: 0;
-            margin: 10px 0;
+        li.wrong {
+            background-color: #ffcdd2;
         }
-        .leaderboard li {
-            padding: 5px 10px;
-            background: #f0f0f5;
-            margin-bottom: 5px;
-            border-radius: 3px;
+        button {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <div class="quiz-container">
-        <div class="timer" id="timer">Time Left: 10s</div>
-        <div class="question" id="question"></div>
-        <ul class="options" id="options"></ul>
-        <button id="next-btn">Next</button>
-        <div class="result" id="result"></div>
-        <div class="leaderboard" id="leaderboard">
-            <h2>Leaderboard</h2>
-            <ul id="leaderboard-list"></ul>
-        </div>
+        <h1 id="question"></h1>
+        <ul id="options"></ul>
+        <p id="timer"></p>
+        <button id="next-btn" style="display: none;">Next Question</button>
+    </div>
+    <div class="leaderboard">
+        <h2>Leaderboard</h2>
+        <ul id="leaderboard-list"></ul>
     </div>
 
     <script src="quiz.js"></script>
