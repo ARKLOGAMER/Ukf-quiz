@@ -98,6 +98,11 @@ const questions = [
         question: "What is the official motto of the Olympic Games?",
         options: ["Faster, Higher, Stronger – Together", "One World, One Dream", "Inspire a Generation", "Breaking Barriers"],
         answer: "Faster, Higher, Stronger – Together"
+    },
+    {
+        question: "What is the capital of Australia?",
+        options: ["Sydney", "Melbourne", "Canberra", "Brisbane"],
+        answer: "Canberra"
     }
 ];
 
@@ -106,7 +111,7 @@ let timer = 10;
 let interval;
 let score = 0;
 let totalTime = 0;
-const leaderboard = [];
+const leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
 
 function showQuestion() {
     const questionEl = document.getElementById("question");
@@ -170,6 +175,7 @@ document.getElementById("next-btn").onclick = () => {
     } else {
         const name = prompt("Enter your name for the leaderboard:");
         leaderboard.push({ name, score, time: totalTime });
+        localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
         updateLeaderboard();
 
         document.querySelector(".quiz-container").innerHTML = `
@@ -181,7 +187,6 @@ document.getElementById("next-btn").onclick = () => {
                 <ul id="leaderboard-list"></ul>
             </div>
         `;
-
         updateLeaderboard();
     }
 };
