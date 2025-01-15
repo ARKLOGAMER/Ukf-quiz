@@ -114,38 +114,61 @@ let totalTime = 0;
 const leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
 
 function showQuestion() {
-    const questionEl = document.getElementById("question");
-    const optionsEl = document.getElementById("options");
-    const timerEl = document.getElementById("timer");
-    const nextBtn = document.getElementById("next-btn");
+    if (currentQuestionIndex < questions.length) {
+        const questionEl = document.getElementById("question");
+        const optionsEl = document.getElementById("options");
+        const timerEl = document.getElementById("timer");
+        const nextBtn = document.getElementById("next-btn");
 
-    questionEl.textContent = questions[currentQuestionIndex].question;
-    optionsEl.innerHTML = "";
-    timer = 10;
+        questionEl.textContent = questions[currentQuestionIndex].question;
+        optionsEl.innerHTML = "";
+        timer = 10;
 
-    questions[currentQuestionIndex].options.forEach(option => {
-        const li = document.createElement("li");
-        li.textContent = option;
-        li.onclick = () => selectAnswer(li);
-        optionsEl.appendChild(li);
-    });
+        questions[currentQuestionIndex].options.forEach(option => {
+            const li = document.createElement("li");
+            li.textContent = option;
+            li.onclick = () => selectAnswer(li);
+            optionsEl.appendChild(li);
+        });
 
-    nextBtn.style.display = "none";
-    timerEl.textContent = `Time Left: ${timer}s`;
-
-    interval = setInterval(() => {
-        timer--;
+        nextBtn.style.display = "none";
         timerEl.textContent = `Time Left: ${timer}s`;
-        totalTime++;
-        if (timer === 0) {
-            clearInterval(interval);
-            nextBtn.style.display = "block";
-        }
-    }, 1000);
+
+        interval = setInterval(() => {
+            timer--;
+            timerEl.textContent = `Time Left: ${timer}s`;
+            totalTime++;
+            if (timer === 0) {
+                clearInterval(interval);
+                nextQuestion(); // Skip to next question automatically if time runs out
+            }
+        }, 1000);
+    } else {
+        const name = prompt("Enter your name for the leaderboard:");
+        leaderboard.push({ name, score, time: totalTime });
+        localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+        updateLeaderboard();
+
+        document.querySelector(".quiz-container").innerHTML = `
+            <h1>Quiz Completed!</h1>
+            <p>Your Score: ${score}/${questions.length}</p>
+            <p>Total Time: ${totalTime}s</p>
+            <div class="leaderboard">
+                <h2>Leaderboard</h2>
+                <ul id="leaderboard-list"></ul>
+            </div>
+        `;
+        updateLeaderboard();
+    }
 }
 
 function selectAnswer(selectedOption) {
-    clearInterval(interval);
+    // Disable all options after an answer is selected
+    const options = document.querySelectorAll("#options li");
+    options.forEach(option => {
+        option.onclick = null; // Disable further clicks
+    });
+
     const correctAnswer = questions[currentQuestionIndex].answer;
     if (selectedOption.textContent === correctAnswer) {
         selectedOption.classList.add("correct");
@@ -153,22 +176,11 @@ function selectAnswer(selectedOption) {
     } else {
         selectedOption.classList.add("wrong");
     }
-    document.getElementById("next-btn").style.display = "block";
+    
+    document.getElementById("next-btn").style.display = "block"; // Show next button after answer
 }
 
-function updateLeaderboard() {
-    const leaderboardList = document.getElementById("leaderboard-list");
-    leaderboardList.innerHTML = "";
-
-    leaderboard.sort((a, b) => a.time - b.time);
-    leaderboard.forEach(entry => {
-        const li = document.createElement("li");
-        li.textContent = `${entry.name}: ${entry.score} points in ${entry.time}s`;
-        leaderboardList.appendChild(li);
-    });
-}
-
-document.getElementById("next-btn").onclick = () => {
+function nextQuestion() {
     currentQuestionIndex++;
     if (currentQuestionIndex < questions.length) {
         showQuestion();
@@ -189,6 +201,20 @@ document.getElementById("next-btn").onclick = () => {
         `;
         updateLeaderboard();
     }
-};
+}
+
+function updateLeaderboard() {
+    const leaderboardList = document.getElementById("leaderboard-list");
+    leaderboardList.innerHTML = "";
+
+    leaderboard.sort((a, b) => a.time - b.time);
+    leaderboard.forEach(entry => {
+        const li = document.createElement("li");
+        li.textContent = `${entry.name}: ${entry.score} points in ${entry.time}s`;
+        leaderboardList.appendChild(li);
+    });
+}
+
+document.getElementById("next-btn").onclick = nextQuestion;
 
 showQuestion();
